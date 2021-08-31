@@ -203,7 +203,7 @@ function renderRacerCard(racer) {
 function renderTrackCards(tracks) {
 	if (!tracks.length) {
 		return `
-			<h4>Loading Tracks...</4>
+			<h4>Loading Tracks...</h4>
 		`
 	}
 
@@ -320,9 +320,8 @@ function defaultFetchOpts() {
 // TODO - Make a fetch call (with error handling!) to each of the following API endpoints 
 
 function getTracks() {
-	fetch(`${SERVER}/api/tracks`)
+	return fetch(`${SERVER}/api/tracks`)
 		.then((res) => res.json())
-		.then((trackData) => console.log(trackData))
 		.catch((error) => console.log("ERROR", error));
 }
 
