@@ -5,6 +5,7 @@ var store = {
 	track_id: undefined,
 	player_id: undefined,
 	race_id: undefined,
+	tracks: undefined
 }
 
 // We need our javascript to wait until the DOM is loaded
@@ -19,6 +20,8 @@ async function onPageLoad() {
 			.then(tracks => {
 				const html = renderTrackCards(tracks)
 				renderAt('#tracks', html)
+				store.tracks = tracks
+				console.log(store)
 			})
 
 		getRacers()
@@ -74,19 +77,15 @@ async function delay(ms) {
 
 // This async function controls the flow of the race, add the logic and error handling
 async function handleCreateRace() {
-	let { player_id, track_id } = store
+	let { player_id, track_id, track_name } = store
 	const race = await createRace(track_id, player_id)
-	console.log(race)
-	renderAt('#race', renderRaceStartView(race.Track))
+	renderAt('#race', renderRaceStartView(track_name))
 	
-	// TODO - update the store with the race id
+	
 	store.race_id = race.id
-	// The race has been created, now start the countdown
-	// TODO - call the async function runCountdown
+
 	await runCountdown
-	// TODO - call the async function startRace
-	await runCountdown
-	// TODO - call the async function runRace
+	await startRace
 	await runRace
 }
 
@@ -155,9 +154,11 @@ function handleSelectTrack(target) {
 
 	// add class selected to current target
 	target.classList.add('selected')
-
+	store.track_id = target.id
+	store.track_name = store.tracks[store.track_id - 1].name
 	// TODO - save the selected track id to the store
 	store.track_id = target.id
+	// store.track_name =
 	console.log(store)
 }
 
@@ -231,10 +232,10 @@ function renderCountdown(count) {
 	`
 }
 
-function renderRaceStartView(track,races) {
+function renderRaceStartView(track_name) {
 	return `
 		<header>
-			<h1>Race: ${track.name}</h1>
+			<h1>Race: ${track_name}</h1>
 		</header>
 		<main id="two-columns">
 			<section id="leaderBoard">
