@@ -55,7 +55,7 @@ function setupClickHandlers() {
 		}
 
 		// Handle acceleration click
-		if (target.matches('#gas-peddle')) {
+		if (target.matches('#gas-pedal')) {
 			handleAccelerate(target)
 		}
 
@@ -74,21 +74,20 @@ async function delay(ms) {
 
 // This async function controls the flow of the race, add the logic and error handling
 async function handleCreateRace() {
-	// render starting UI
-	renderAt('#race', renderRaceStartView())
-
-	// TODO - Get player_id and track_id from the store
+	let { player_id, track_id } = store
+	const race = await createRace(track_id, player_id)
+	console.log(race)
+	renderAt('#race', renderRaceStartView(race.Track))
 	
-	// const race = TODO - invoke the API call to create the race, then save the result
-
 	// TODO - update the store with the race id
-
+	store.race_id = race.id
 	// The race has been created, now start the countdown
 	// TODO - call the async function runCountdown
-
+	await runCountdown
 	// TODO - call the async function startRace
-
+	await runCountdown
 	// TODO - call the async function runRace
+	await runRace
 }
 
 function runRace(raceID) {
@@ -133,8 +132,6 @@ async function runCountdown() {
 }
 
 function handleSelectPodRacer(target) {
-	console.log("selected a pod", target.id)
-
 	// remove class selected from all racer options
 	const selected = document.querySelector('#racers .selected')
 	if(selected) {
@@ -150,8 +147,6 @@ function handleSelectPodRacer(target) {
 }
 
 function handleSelectTrack(target) {
-	console.log("selected a track", target.id)
-
 	// remove class selected from all track options
 	const selected = document.querySelector('#tracks .selected')
 	if(selected) {
@@ -236,7 +231,7 @@ function renderCountdown(count) {
 	`
 }
 
-function renderRaceStartView(track, racers) {
+function renderRaceStartView(track,races) {
 	return `
 		<header>
 			<h1>Race: ${track.name}</h1>
@@ -249,7 +244,7 @@ function renderRaceStartView(track, racers) {
 			<section id="accelerate">
 				<h2>Directions</h2>
 				<p>Click the button as fast as you can to make your racer go faster!</p>
-				<button id="gas-peddle">Click Me To Win!</button>
+				<button id="gas-pedal">Click Me To Win!</button>
 			</section>
 		</main>
 		<footer></footer>
@@ -342,7 +337,7 @@ function createRace(player_id, track_id) {
 	return fetch(`${SERVER}/api/races`, {
 		method: 'POST',
 		...defaultFetchOpts(),
-		dataType: 'jsonp',
+		dataType: 'json',
 		body: JSON.stringify(body)
 	})
 	.then(res => res.json())
