@@ -84,15 +84,16 @@ async function handleCreateRace() {
 	
 	store.race_id = race.id
 
-	await runCountdown
-	await startRace
-	await runRace
+	await runCountdown()
+	await getRace()
+	await startRace()
+	await runRace(store.race_id)
 }
 
 function runRace(raceID) {
 	return new Promise(resolve => {
 	// TODO - use Javascript's built in setInterval method to get race info every 500ms
-
+		
 	/* 
 		TODO - if the race info status property is "in-progress", update the leaderboard by calling:
 
@@ -117,14 +118,15 @@ async function runCountdown() {
 		let timer = 3
 
 		return new Promise(resolve => {
-			// TODO - use Javascript's built in setInterval method to count down once per second
-
-			// run this DOM manipulation to decrement the countdown for the user
-			document.getElementById('big-numbers').innerHTML = --timer
-
-			// TODO - if the countdown is done, clear the interval, resolve the promise, and return
-
-		})
+			const interval = setInterval(() => {
+				document.getElementById("big-numbers").innerHTML = --timer;
+				if (timer === 0) {
+				  clearInterval(interval);
+				  resolve();
+				  return;
+				}
+			  }, 1000);
+			});
 	} catch(error) {
 		console.log(error);
 	}
@@ -346,7 +348,9 @@ function createRace(player_id, track_id) {
 }
 
 function getRace(id) {
-	// GET request to `${SERVER}/api/races/${id}`
+	return fetch(`${SERVER}/api/races/${id}`)
+		.then((res) => res.json())
+		.catch(error => console.log(error))
 }
 
 function startRace(id) {
