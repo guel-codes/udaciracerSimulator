@@ -39,6 +39,16 @@ function setupClickHandlers() {
 	document.addEventListener('click', function(event) {
 		const { target } = event
 
+		let parent = event.target.parentElement
+
+		if (parent.matches('.card.track')) {
+			handleSelectTrack(parent)
+		}
+
+		if (target.matches('.card.podracer')) {
+			handleSelectPodRacer(parent)
+		}
+
 		// Race track form field
 		if (target.matches('.card.track')) {
 			handleSelectTrack(target)
@@ -81,19 +91,20 @@ async function handleCreateRace() {
 	const race = await createRace(track_id, player_id)
 	renderAt('#race', renderRaceStartView(track_name))
 	
+	store.race_id = race.ID
 	
-	store.race_id = race.id
-
 	await runCountdown()
-	await getRace()
 	await startRace()
 	await runRace(store.race_id)
 }
 
-function runRace(raceID) {
+async function runRace(raceID) {
 	return new Promise(resolve => {
 	// TODO - use Javascript's built in setInterval method to get race info every 500ms
-		
+		setInterval(() =>{
+			let data = getRace(raceID)
+			console.log(data)
+		},500)
 	/* 
 		TODO - if the race info status property is "in-progress", update the leaderboard by calling:
 
@@ -144,7 +155,6 @@ function handleSelectPodRacer(target) {
 
 	// TODO - save the selected racer to the store
 	store.player_id = target.id
-	console.log(store)
 }
 
 function handleSelectTrack(target) {
