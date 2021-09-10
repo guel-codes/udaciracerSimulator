@@ -62,7 +62,6 @@ function setupClickHandlers() {
 		// Submit create race form
 		if (target.matches('#submit-create-race')) {
 			event.preventDefault()
-	
 			// start race
 			handleCreateRace()
 		}
@@ -103,7 +102,6 @@ async function runRace(raceID) {
 	// TODO - use Javascript's built in setInterval method to get race info every 500ms
 		setInterval(() =>{
 			let data = getRace(raceID)
-			console.log(data)
 		},500)
 	/* 
 		TODO - if the race info status property is "in-progress", update the leaderboard by calling:
