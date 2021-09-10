@@ -62,7 +62,6 @@ function setupClickHandlers() {
 		// Submit create race form
 		if (target.matches('#submit-create-race')) {
 			event.preventDefault()
-	
 			// start race
 			handleCreateRace()
 		}
@@ -99,6 +98,7 @@ async function handleCreateRace() {
 	await runRace(store.race_id, store.status)
 }
 
+<<<<<<< HEAD
 async function runRace(raceID, status) {
 	try {
 		return new Promise((resolve) => {
@@ -119,6 +119,19 @@ async function runRace(raceID, status) {
 	  } catch (error) {
 		console.log(error);
 	  }
+=======
+async function runRace(raceID) {
+	return new Promise(resolve => {
+	// TODO - use Javascript's built in setInterval method to get race info every 500ms
+		setInterval(() =>{
+			let data = getRace(raceID)
+		},500)
+	/* 
+		TODO - if the race info status property is "in-progress", update the leaderboard by calling:
+
+		renderAt('#leaderBoard', raceProgress(res.positions))
+	*/
+>>>>>>> a023be6eb96982dc3cc60069283e00eef880f2d7
 
 	/* 
 		TODO - if the race info status property is "finished", run the following:
