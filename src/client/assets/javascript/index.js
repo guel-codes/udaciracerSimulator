@@ -1,7 +1,4 @@
-// PROVIDED CODE BELOW (LINES 1 - 80) DO NOT REMOVE
-
-// The store will hold all information needed globally
-var store = {
+let store = {
 	track_id: undefined,
 	player_id: undefined,
 	race_id: undefined,
@@ -9,7 +6,7 @@ var store = {
 	status: undefined
 }
 
-// We need our javascript to wait until the DOM is loaded
+
 document.addEventListener("DOMContentLoaded", function() {
 	onPageLoad()
 	setupClickHandlers()
@@ -39,7 +36,7 @@ function setupClickHandlers() {
 	document.addEventListener('click', function(event) {
 		const { target } = event
 
-		let parent = event.target.parentElement
+		const parent = event.target.parentElement
 
 		if (parent.matches('.card.track')) {
 			handleSelectTrack(parent)
@@ -82,11 +79,9 @@ async function delay(ms) {
 		console.log(error)
 	}
 }
-// ^ PROVIDED CODE ^ DO NOT REMOVE
 
-// This async function controls the flow of the race, add the logic and error handling
 async function handleCreateRace() {
-	let { player_id, track_id, track_name } = store
+	const { player_id, track_id, track_name } = store
 	const race = await createRace(track_id, player_id)
 	renderAt('#race', renderRaceStartView(track_name))
 
@@ -102,7 +97,7 @@ async function runRace(raceID, status) {
 	try {
 		return new Promise((resolve) => {
 		  const interval = setInterval(async () => {
-			let data = await getRace(raceID);
+			const data = await getRace(raceID);
 			resolve(data);
 			if (data.status === "in-progress") {
 				renderAt("#leaderBoard", raceProgress(data.positions));
@@ -122,7 +117,7 @@ async function runRace(raceID, status) {
 
 async function runCountdown() {
 	try {
-		// wait for the DOM to load
+		
 		await delay(1000)
 		let timer = 3
 
@@ -142,21 +137,17 @@ async function runCountdown() {
 }
 
 function handleSelectPodRacer(target) {
-	// remove class selected from all racer options
+	
 	const selected = document.querySelector('#racers .selected')
 	if(selected) {
 		selected.classList.remove('selected')
 	}
 
-	// add class selected to current target
 	target.classList.add('selected')
-
-	// TODO - save the selected racer to the store
 	store.player_id = target.id
 }
 
 function handleSelectTrack(target) {
-	// remove class selected from all track options
 	const selected = document.querySelector('#tracks .selected')
 	if(selected) {
 		selected.classList.remove('selected')
@@ -166,9 +157,8 @@ function handleSelectTrack(target) {
 	target.classList.add('selected')
 	store.track_id = target.id
 	store.track_name = store.tracks[store.track_id - 1].name
-	// TODO - save the selected track id to the store
+	
 	store.track_id = target.id
-	// store.track_name =
 }
 
 function handleAccelerate() {
@@ -275,7 +265,7 @@ function resultsView(positions) {
 }
 
 function raceProgress(positions) {
-	let userPlayer = positions[store.player_id - 1]
+	const userPlayer = positions[store.player_id - 1]
 	userPlayer.driver_name += " (you)"
 
 	positions = positions.sort((a, b) => (a.segment > b.segment) ? -1 : 1)
@@ -307,7 +297,7 @@ function renderAt(element, html) {
 	node.innerHTML = html
 }
 
-// ^ Provided code ^ do not remove
+
 
 
 // API CALLS ------------------------------------------------
@@ -352,7 +342,7 @@ function createRace(player_id, track_id) {
 	.catch(err => console.log("Problem with createRace request::", err))
 }
 
-// ISSUES WITH THIS --> http://localhost:8000/api/races/7 does not work but http://localhost:8000/api/races/ does 
+
 
 function getRace(id) {
 	return fetch(`${SERVER}/api/races/${id}`)
@@ -361,7 +351,7 @@ function getRace(id) {
 }
 
 function startRace(id) {
-	return fetch(`${SERVER}/api/races/${id}/start`, {  //ISSUES WITH THIS --> How does race status change from "unstarted" to "in-progress"
+	return fetch(`${SERVER}/api/races/${id}/start`, {  
 		method: 'POST',
 		...defaultFetchOpts(),
 	})
